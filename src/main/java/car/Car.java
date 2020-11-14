@@ -44,9 +44,14 @@ public class Car {
         return this.gasLevel;
     }
 
+    public Car addGas(int g) {
+        return new Car(gasLevel + g, color, passengers, trunkContents);
+    }
+
     public String getColor() {
         return this.color;
     }
+
 
     public static Predicate<Car> getColorCriterion(String ... colors){
         Set<String> colorSet = new HashSet<String>(Arrays.asList(colors));
@@ -68,6 +73,10 @@ public class Car {
 
     @Override
     public String toString() {
-        return "Car(" + gasLevel + "#" + color + "#" + passengers + "#" + trunkContents + ")";
+        return
+                "Car: gasLevel " + gasLevel + " || " +
+                    "color " + color + " || " +
+                    "passengers " + passengers + " || " +
+                    "trunkContents " + trunkContents + ")";
     }
 }
