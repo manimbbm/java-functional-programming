@@ -29,6 +29,13 @@ public class SuperIterable<E> implements Iterable<E>{
         return new SuperIterable<>(results);
     }
 
+    public <F> SuperIterable<F> flatMap(Function<E, SuperIterable<F>> op) {
+        List<F> results = new ArrayList<>();
+        self.forEach(e -> op.apply(e).forEach(results::add));
+
+        return new SuperIterable<>(results);
+    }
+
     public <F> SuperIterable<F> map(Function<E, F> op) {
         List<F> results = new ArrayList<>();
         self.forEach(e -> results.add(op.apply(e)));
@@ -63,8 +70,8 @@ public class SuperIterable<E> implements Iterable<E>{
         SuperIterable<Car> carIter = new SuperIterable<>(
                 List.of(Car.withGasColorPassengers(6, "Red", "Fred", "Jim"),
                         Car.withGasColorPassengers(1, "Blue", "Bruno"),
-                        Car.withGasColorPassengers(2, "Red", "Isa", "Bela", "Angela"),
-                        Car.withGasColorPassengers(12, "Red", "Lucas", "Luigi", "Mario", "Bowser", "Peter")
+                        Car.withGasColorPassengers(2, "pink", "Isa", "Bela", "Angela"),
+                        Car.withGasColorPassengers(12, "grey", "Lucas", "Luigi", "Mario", "Bowser", "Peter")
                 )
         );
 
@@ -91,5 +98,17 @@ public class SuperIterable<E> implements Iterable<E>{
 
         System.out.println("---------------------------");
         carIter.forEach(c -> System.out.println(">> " + c));
+
+        System.out.println("---------------------------");
+        carIter
+            .flatMap(c ->  new SuperIterable<>(c.getPassengers()))
+            .forEach(System.out::println);
+
+        System.out.println("---------------------------");
+        carIter
+            .filter(c -> List.of("Red", "Blue", "pink").contains(c.getColor()))
+            .flatMap(c ->  new SuperIterable<>(c.getPassengers())
+                .map(p -> p + " is riding on a " + c.getColor() + " car"))
+            .forEach(System.out::println);
     }
 }
